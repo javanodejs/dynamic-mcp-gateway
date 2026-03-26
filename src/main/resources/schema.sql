@@ -1,0 +1,40 @@
+DROP TABLE IF EXISTS mcp_service_tool_binding;
+DROP TABLE IF EXISTS mcp_tool;
+DROP TABLE IF EXISTS mcp_service;
+
+CREATE TABLE IF NOT EXISTS mcp_service (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    service_code VARCHAR(64) NOT NULL UNIQUE,
+    service_name VARCHAR(128) NOT NULL,
+    service_desc VARCHAR(1000),
+    protocol VARCHAR(32) NOT NULL DEFAULT 'STATELESS',
+    enabled TINYINT(1) NOT NULL DEFAULT 1,
+    request_headers TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS mcp_tool (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    tool_code VARCHAR(128) NOT NULL UNIQUE,
+    tool_name VARCHAR(128) NOT NULL,
+    tool_desc VARCHAR(1000),
+    http_method VARCHAR(16) NOT NULL DEFAULT 'POST',
+    api_url VARCHAR(2000) NOT NULL,
+    parameters_json TEXT,
+    request_headers TEXT,
+    enabled TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS mcp_service_tool_binding (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    service_id BIGINT NOT NULL,
+    tool_id BIGINT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_service_tool UNIQUE (service_id, tool_id),
+    CONSTRAINT fk_binding_service FOREIGN KEY (service_id) REFERENCES mcp_service(id) ON DELETE CASCADE,
+    CONSTRAINT fk_binding_tool FOREIGN KEY (tool_id) REFERENCES mcp_tool(id) ON DELETE CASCADE
+);

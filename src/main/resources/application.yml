@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: dynamic-mcp-gateway
+
+  ai:
+    mcp:
+      server:
+        name: mcp-gateway
+        version: 1.0.0
+        streamable-http:
+          mcp-endpoint: /mcp/{serviceCode}
+          keep-alive-interval: 30s
+          disallow-delete: true
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/mcp_gateway?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+
+  sql:
+    init:
+      mode: never
+
+server:
+  port: 8080
+
+app:
+  public-base-url: http://127.0.0.1:8080
+
+logging:
+  level:
+    com.xeno.mcpg: DEBUG
